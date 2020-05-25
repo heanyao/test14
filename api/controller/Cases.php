@@ -161,5 +161,11 @@ class Cases extends Common
             //响应数据给客户端
             $this->returnMsg(200, '操作成功！', $res);
     }
+	
+	//Rate
+    public function rate(){
+		$res = $_POST;
+		$this->returnMsg(200, '操作成功！', $res);
+	}
 
 }

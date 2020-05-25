@@ -143,6 +143,7 @@
     padding: 10px 0;
     margin-top: 20px;
 }
+#rate1 img,#rate2 img,#rate3 img {width: 22px;}
 		</style>
 	</head>
 	<body>
@@ -156,15 +157,16 @@
 				<div class="p_info_content">
 					<div class="hd c_row" style="border-bottom: none;">
 						<span class="c_row" style="font-size: 14px;color: #666;">
-							选择投诉 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>全部</p>
-							 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>审核中</p>
-							 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>处理中</p>
-							 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>已完成</p>
-							 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>审核未通过</p>
+							选择投诉 
+							 <p class="c_news"><i data-type='0' class="c_sx_check c_sx_checked" @click="sx_checked($event)"></i>全部</p>
+							 <p class="c_news"><i data-type='1' class="c_sx_check" @click="sx_checked($event)"></i>审核中</p>
+							 <p class="c_news"><i data-type='2' class="c_sx_check" @click="sx_checked($event)"></i>处理中</p>
+							 <p class="c_news"><i data-type='3' class="c_sx_check" @click="sx_checked($event)"></i>已完成</p>
+							 <p class="c_news"><i data-type='4' class="c_sx_check" @click="sx_checked($event)"></i>审核未通过</p>
 						</span>
 					</div>
 					<div class="left_con_list" style="font-size: 0;"></div>
-					<div class="left_click_load_more">
+					<div class="left_click_load_more" @click="loadmore($event)">
 						点击加载更多
 					</div>
 					<div class="no_more" style="display: none;">
@@ -179,7 +181,19 @@
 		<script src="__INDEX__/style/c_chat.js"></script>
 		<script src="__INDEX__/style/d_jquery.page.js"></script>
 		<script src="__INDEX__/style/MiniDialog-es5.min.js"></script>
+		<script src="__INDEX__/style/jquery.raty.min.js"></script>
 		<script>
+            new Vue({
+                el: '#layui-layer1',
+                data() {
+                    return {
+                        value: null,
+                        colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+                    }
+                }
+            });
+
+
 			new Vue({
 				el: '#app',
 				filters: {
@@ -249,10 +263,15 @@
 						msg_count:0,
 						page_size:20,//修改每页显示条数
 						page:1,
+                        current_page:1,
+                        keyword: '',
+                        catid: 0,
 						msg_list: [],
 						show_list: [],
 						my_id:1,
-						my_head_img:my_h_img,		
+						my_head_img:my_h_img,
+						value: null,
+						colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
 					}
 				},
 				methods: {
@@ -286,7 +305,7 @@
 					},
 					sx_checked: function(e) {
 						var el = event.currentTarget;
-						if (this.is_only_readed) {
+						/*if (this.is_only_readed) {
 							$(el).removeClass('c_sx_checked');
 							this.is_only_readed = false;
 							this.show_list = this.msg_list;
@@ -295,9 +314,36 @@
 							$(el).addClass('c_sx_checked');
 							this.is_only_readed = true;
 							this.show_list = this.no_readed;
-						}
+						}*/
+						console.log('el', el)
+						for	(var i=0; i<$('.c_sx_check').length; i++){
+							var n=$(el).attr('data-type');
+							console.log('n', n)
+							if (i == n && $('.c_sx_check').eq(n).hasClass('c_sx_checked') == false) {
+								$('.c_sx_check').eq(i).addClass('c_sx_checked');
+								//this.is_only_readed = false;
+                                this.current_page = 1; //重置为第一页
+								msg_list = getData(this.current_page, this.keyword, n)
+								this.show_list = this.msg_list;
+								this.catid = n
 
+							} else {
+								$('.c_sx_check').eq(i).removeClass('c_sx_checked');
+								//this.is_only_readed = true;
+								this.show_list = this.no_readed;
+							}
+						}
 					},
+                    loadmore: function(e) {
+                        this.current_page++;
+                        getData(this.current_page, this.keyword, this.catid);
+                    },
+                    sx_load: function() {
+
+                        this.current_page = 1; //重置为第一页
+                        msg_list = getData(this.current_page, this.keyword, this.catid)
+                        this.show_list = this.msg_list;
+                    },
 
 				},
 				computed: {
@@ -308,37 +354,98 @@
 					}
 				},
 				mounted: function() {
-					this.get_msg_count();
-					this.get_msg_list();
+					// this.get_msg_count();
+					// this.get_msg_list();
+                    this.sx_load();
 				}
 			});
-			var current_page = 1;
-			var keyword = '';
-			getData(current_page, keyword)
+			// var current_page = 1;
+			// var keyword = '';
+			// getData(current_page, keyword, 0)
 			// 加载更多
-			$('body').on('click', '.left_click_load_more', function() {
-				current_page++;
-				getData(current_page, keyword);
-			});
-			//跳转
+			// $('body').on('click', '.left_click_load_more', function() {
+			// 	current_page++;
+			// 	getData(current_page, keyword, $(this).attr('data-type'));
+			// });
+			// 跳转
 			function go1(e){
 				id= e.getAttribute('data-id')
 				$(window).attr('location','/index/myform/addcase?myid='+id);
 			}
 			function go2(id){
-				setTimeout(function(){ 
-					$(window).attr('location','www.testweb222.com/'+id);
-					},100)
-				document.getElementById('go_'+id).addEventListener('click',function(e){e.stopPropagation()},false);
+				console.log('修改')
+				$(window).attr('location','www.testweb222.com/'+id);
 			}
+			// 弹窗
+			function go3(id){
+				console.log('弹窗')
+				var rate = '<div style="margin:30px 10px 0 45px">' +
+                    '<div style="height: 30px;clear: both;"><div style="width: 70px;float: left;">处理速度：</div><div style="float: left;width: 130px" id="rate1"></div><div style="margin-left: 5px;width: 40px;float: left;"></div></div>' +
+                    '<div style="height: 30px;clear: both;"><div style="width: 70px;float: left;">服务态度：</div><div style="float: left;width: 130px" id="rate2"></div><div style="margin-left: 5px;width: 40px;float: left;"></div></div>' +
+                    '<div style="height: 30px;clear: both;"><div style="width: 70px;float: left;">满意度：  </div><div style="float: left;width: 130px" id="rate3"></div><div style="margin-left: 5px;width: 40px;float: left;"></div></div></div>'
+				layer.open({
+                    type:1,
+				  content: rate,
+				  title: '确认完成',
+				  area: ['360px', '250px'], //自定义文本域宽高
+                  btn: ['确定', '放弃'],
+                    yes: function(index, layero){
+                        var data_speed = $('#rate1').attr('data-speed');
+                        var data_service = $('#rate2').attr('data-service');
+                        var data_good = $('#rate3').attr('data-good');
+                        $.post("/api/cases/rate", { myid:id, speed: data_speed, service: data_service, good: data_good },function(data){
+                            alert("Data Loaded: " + data);
+                        });
+                    }
+
+                })
+
+                $('#rate1').raty({
+                    half: true,
+                    path: '/static/index/images',
+                    starHalf: 'Half-star.png',
+                    starOff: 'Star_2.png',
+                    starOn: 'Star.png',
+                    width: 130,
+                    click: function(score, evt) {
+                        $(this).attr('data-speed', score)
+                        $(this).next('div').text(score+' 星')
+                    }
+                });
+                $('#rate2').raty({
+                    half: true,
+                    path: '/static/index/images',
+                    starHalf: 'Half-star.png',
+                    starOff: 'Star_2.png',
+                    starOn: 'Star.png',
+                    width: 130,
+                    click: function(score, evt) {
+                        $(this).attr('data-service', score)
+                        $(this).next('div').text(score+' 星')
+                    }
+                });
+                $('#rate3').raty({
+                    half: true,
+                    path: '/static/index/images',
+                    starHalf: 'Half-star.png',
+                    starOff: 'Star_2.png',
+                    starOn: 'Star.png',
+                    width: 130,
+                    click: function(score, evt) {
+                        $(this).attr('data-good', score)
+                        $(this).next('div').text(score+' 星')
+                    }
+                });
+			}
+			
 			// 获取数据
-			function getData(page, keyword) {
+			function getData(page, keyword, cate_id) {
 				if (page == 1) {
 					$('.left_click_load_more').show();
 					$('.no_more').hide();
 				}
 				$.ajax({
-					url: `/api/cases/mycaselist?page=`+page,
+					url: `/api/cases/mycaselist?page=`+page+'&cate_id='+cate_id,
 					type: 'get',
 					dataType: 'json',
 					success: function(data) {
@@ -351,10 +458,10 @@
 									status = '/static/index/images/dealIcon.png'; // 已处理
 								} else if(res[i].status > 3 && res[i].status <7) {
 									status = '/static/index/images/returnIcon.png'; // 已回复
-								} else if (res[i].status > 6) { 
+								} else if (res[i].status > 6) {
 									status = '/static/index/images/doneIcon.png'; // 已完成
 								}
-								html_text += `<a data-id="${res[i].myid}" href="javascript:;" onclick="go1(this)" class="left_con_item">
+								html_text += `<div class="left_con_item"><a data-id="${res[i].myid}" href="javascript:;" onclick="go1(this)">
 									<img src="${status}" alt="状态" class="left_msg_status"/>
 									<div class="left_item_title">
 										<i class="left_hot_icon"></i>${res[i].title}
@@ -372,10 +479,10 @@
 									<div class="left_item_complaint_content">
 										<span>【投诉要求】</span>
 										<span class="item_marginLeft10">${res[i].require}</span>
-									</div>
+									</div></a>
 									<div class="left_item_complaint_content">
-									<button id="go_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:50px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">修改</button></div>
-								</a>`
+									<button id="go2_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:50px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">修改</button>
+									<button id="go3_${res[i].myid}" onclick="go3(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">确认完成</button></div></div>`
 							}
 							// if(page==3){
 							// 	$('.left_click_load_more').css('display', 'none')
