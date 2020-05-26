@@ -7,15 +7,15 @@
 		<title>Process</title>
 		<link rel="stylesheet" href="__INDEX__/style/cases.css">
 		<link rel="stylesheet" type="text/css" href="__INDEX__/style/bootstrap.css" />
-		<script src="__INDEX__/style/bootstrap.js"></script>
 		<script src="__INDEX__/style/jquery-1.8.3.min.js"></script>
+		<script src="__INDEX__/style/bootstrap.js"></script>
     <!-- 新增 -->
 		<script src="__INDEX__/style/d_jquery.page.js"></script>
 		<link rel="stylesheet" href="__INDEX__/style/page.css">
 		<script src="__INDEX__/style/q_emoji.js"></script>
 		<link rel="stylesheet" href="__INDEX__/style/q_emoji.css">
 		<link rel="stylesheet" href="__INDEX__/style/q_style.css">
-
+		<style>#rate1 img,#rate2 img,#rate3 img {width: 22px;}</style>
 	</head>
 	<script>
 	var case_id = {$basic_info.myid};
@@ -152,7 +152,7 @@
 							{elseif condition="$vo.status eq 3"/}
 							商家处理中。
 							{elseif condition="$vo.status eq 7"/}
-							<div class="j_process_stars" style="margin: 15px 0px 15px 0px;">
+							<!-- <div class="j_process_stars" style="margin: 15px 0px 15px 0px;">
 								<p><span>处理速度：</span>
 									<span>
 										<img src="__INDEX__/images/Star.png">
@@ -160,6 +160,7 @@
 										<img src="__INDEX__/images/Star.png">
 										<img src="__INDEX__/images/Half-star.png">
 										<img src="__INDEX__/images/Star_2.png">
+										<div id='rate1'></div>
 									</span><span>{$basic_info.s_speed/10} 星</span></p>
 								<p><span>服务态度：</span>
 									<span>
@@ -168,6 +169,7 @@
 										<img src="__INDEX__/images/Star.png">
 										<img src="__INDEX__/images/Half-star.png">
 										<img src="__INDEX__/images/Star_2.png">
+										<div id='rate2'></div>
 									</span>
 									<span>{$basic_info.s_service/10} 星</span></p>
 								<p><span>满意度：</span>
@@ -177,9 +179,18 @@
 										<img src="__INDEX__/images/Star.png">
 										<img src="__INDEX__/images/Half-star.png">
 										<img src="__INDEX__/images/Star_2.png">
+										<div id='rate3'></div>
 									</span>
 									<span>{$basic_info.s_satisfation/10} 星</span></p>
-							</div>
+							</div> -->
+							
+							
+							<div style="margin:10px 10px 0 45px">
+                    <div style="height: 30px;clear: both;"><div style="width: 70px;float: left;">处理速度：</div><div style="float: left;width: 130px" id="rate1"></div><div style="margin-left: 5px;width: 40px;float: left;">{$basic_info.s_speed/10} 星</div></div>
+                    <div style="height: 30px;clear: both;"><div style="width: 70px;float: left;">服务态度：</div><div style="float: left;width: 130px" id="rate2"></div><div style="margin-left: 5px;width: 40px;float: left;">{$basic_info.s_service/10} 星</div></div>
+                    <div style="height: 30px;clear: both;"><div style="width: 70px;float: left;">满意度：  </div><div style="float: left;width: 130px" id="rate3"></div><div style="margin-left: 5px;width: 40px;float: left;">{$basic_info.s_satisfation/10} 星</div></div></div>
+							
+							
 							{else /}
 								{$vo.content}
 							{/if}
@@ -406,8 +417,9 @@
     <script src="__INDEX__/style/d_jquery.page.js"></script>
     <script src="__INDEX__/style/MiniDialog-es5.min.js"></script>
     <script src="__INDEX__/style/cases.js"></script>
+	<script src="__INDEX__/style/jquery.raty.min.js"></script>
     <script>
-        $('.circlechart').circlechart(); // Initialization
+        //$('.circlechart').circlechart(); // Initialization
         $(".tcdPageCode").createPage({
             pageCount: 10,
             current: 1,
@@ -420,6 +432,40 @@
             var _this = $(e); //将当前的pimg元素作为_this传入函数
             imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
         }
+		
+		setTimeout(function(){
+		
+			$('#rate1').raty({
+				readOnly: true,
+				half: true,
+				path: '/static/index/images',
+				starHalf: 'Half-star.png',
+				starOff: 'Star_2.png',
+				starOn: 'Star.png',
+				width: 130,
+				score: {$basic_info.s_speed/10}
+			});
+			$('#rate2').raty({
+				readOnly: true,
+				half: true,
+				path: '/static/index/images',
+				starHalf: 'Half-star.png',
+				starOff: 'Star_2.png',
+				starOn: 'Star.png',
+				width: 130,
+				score: {$basic_info.s_service/10}
+			});
+			$('#rate3').raty({
+				readOnly: true,
+				half: true,
+				path: '/static/index/images',
+				starHalf: 'Half-star.png',
+				starOff: 'Star_2.png',
+				starOn: 'Star.png',
+				width: 130,
+				score: {$basic_info.s_satisfation/10}
+			});
+		}, 100)
     </script>
 
 	</body>

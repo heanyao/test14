@@ -458,11 +458,11 @@
 								var botton2 = '';//评价
 								if (res[i].status === 0) {
 									status = '/static/index/images/shenhezhong.png'; // 审核中
-									botton1 = '<button id="go2_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">追加投诉</button>'; 
+									botton1 = '<button id="go2_'+res[i].myid+'" onclick="go2('+res[i].myid+';return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">追加投诉</button>'; 
 								} else if(res[i].status > 1 && res[i].status <7) {
 									status = '/static/index/images/chulizhong.png'; // 处理中
-									botton1 = '<button id="go2_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">追加投诉</button>'; 
-									botton2 = '<button id="go3_${res[i].myid}" onclick="go3(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">确认完成</button>';
+									botton1 = '<button id="go2_'+res[i].myid+'" onclick="go2('+res[i].myid+');return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">追加投诉</button>'; 
+									botton2 = '<button id="go3_'+res[i].myid+'" onclick="go3('+res[i].myid+');return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">确认完成</button>';
 								} else if (res[i].status > 6) {
 									status = '/static/index/images/yiwancheng.png'; // 已完成
 								} else if (res[i].status === 1) {
