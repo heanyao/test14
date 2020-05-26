@@ -24,6 +24,7 @@ class Cases extends Common
         //加载渲染时的评论数据
         if (Request::instance()->isPost()){
             $datas['case_id']=input('post.case_id');  
+            $datas['case_id']= db('case')->where('myid',$datas['case_id'])->value('id');
             $datas['support']=(int)input('post.support');
 
                 if (!isset($datas['num'])) {
@@ -54,13 +55,23 @@ class Cases extends Common
         if (Request::instance()->isPost()){
             // $this->checkLogin();//上线再打开
             $datas['case_id']=input('post.case_id'); 
+            //后期可优化
+            $datas['case_id']= db('case')->where('myid',$datas['case_id'])->value('id');
             $datas['msg']=input('post.msg');   
-            $datas['netizen_id']= $this->uid;  
-
+            $datas['netizen_id']= $this->uid; 
 
             $datas['create_time'] = time();
-            //图片上传
-            $datas['comment_pics']=$this->obj->upload();
+
+            if(!$datas['msg']){
+                $this->returnMsg(400, '留言不能为空！');
+            }
+
+            if(!$datas['case_id']){
+                $this->returnMsg(400, '本文id不能为空！');
+            }
+
+            //图片上传 使用 broker模块的上传
+            $datas['comment_pics']=input('post.images');
 
             // dump($datas);die;
 
@@ -84,13 +95,24 @@ class Cases extends Common
         if (Request::instance()->isPost()){
             // $this->checkLogin();//上线再打开
             $postdata['pid']= (int)input('post.commentid');
-            $postdata['case_id']= (int)input('post.case_id');
+            $postdata['case_id']= input('post.case_id');
+            // dump($postdata);die;
+            $postdata['case_id']= db('case')->where('myid',$postdata['case_id'])->value('id');
             $postdata['msg']= input('post.msg');
             $postdata['netizen_id']= $this->uid;     
             $postdata['create_time'] = time();
 
-            //图片上传
-            $datas['comment_pics']=$this->obj->upload();
+            if(!$postdata['msg']){
+                $this->returnMsg(400, '留言不能为空！');
+            }
+            if(!$postdata['pid']){
+                $this->returnMsg(400, 'pid不能为空！');
+            }
+            if(!$postdata['case_id']){
+                $this->returnMsg(400, '本文id不能为空！');
+            }
+            //图片上传 使用 broker模块的上传
+            $postdata['comment_pics']=input('post.images');
 
             //2. 往数据库插入文章信息
             $res = db('case_comments')->insertGetId($postdata);   
@@ -125,6 +147,30 @@ class Cases extends Common
             $this->returnMsg('add200', '您已成功顶该文! 请刷新页面',$ret);
         }      
     }    
+
+    //对本case评论的ding
+    public function cmt_add_ding()
+    {
+        // $this->checkLogin();
+        $artId = input('comment_id');
+        $type = input('type');
+        // $userId = session('userinfo')['id'];//上线再打开
+        $userId = 1;
+        $ret = $this->obj->cmt_addDing($artId, $userId, $type);
+        // dump($ret);die;
+        if ($ret === false) {
+            $this->returnMsg(400, '请勿再顶! 明天再来');
+        }
+
+        if ($ret['code']  === 'delete200') {
+            $this->returnMsg('delete200', 'delete200操作成功!',$ret);
+        } 
+
+        if ($ret['code']  === 'add200') {
+            $this->returnMsg('add200', '您已成功顶该文! 请刷新页面',$ret);
+        }      
+    }
+
 
     public function supporters()
     {
@@ -161,11 +207,24 @@ class Cases extends Common
             //响应数据给客户端
             $this->returnMsg(200, '操作成功！', $res);
     }
-	
-	//Rate
+
+// 图片的上传
+    public function upload()
+    {    
+        // $this->checkLogin();//上线再打开
+        $file = request()->file('images');
+        // dump( $file );die;
+        $file = $this->obj->uploadOne($file);
+
+        $this->returnMsg($file['code'], '成功与否看code', $file['data']);
+    }
+
+    //Rate
     public function rate(){
-		$res = $_POST;
-		$this->returnMsg(200, '操作成功！', $res);
-	}
+        $res = $_POST;
+        $this->returnMsg(200, '操作成功！', $res);
+    }
 
 }
+
+

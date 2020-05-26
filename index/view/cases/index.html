@@ -9,6 +9,13 @@
 		<link rel="stylesheet" type="text/css" href="__INDEX__/style/bootstrap.css" />
 		<script src="__INDEX__/style/bootstrap.js"></script>
 		<script src="__INDEX__/style/jquery-1.8.3.min.js"></script>
+    <!-- 新增 -->
+		<script src="__INDEX__/style/d_jquery.page.js"></script>
+		<link rel="stylesheet" href="__INDEX__/style/page.css">
+		<script src="__INDEX__/style/q_emoji.js"></script>
+		<link rel="stylesheet" href="__INDEX__/style/q_emoji.css">
+		<link rel="stylesheet" href="__INDEX__/style/q_style.css">
+
 	</head>
 	<script>
 	var case_id = {$basic_info.myid};
@@ -20,6 +27,7 @@
 	</style>
 	<body>
 	{include file="public/header"}
+	<input type="hidden" name="" id="case_id" value="{$basic_info.myid}" />
 		<div class="j_main">
 			<div class="j_top_number">
 				<span>编号：</span><span>{$basic_info.myid}</span>
@@ -99,48 +107,7 @@
 						</div>
 					</div>
 					<div class="j_process_content">
-						<div class="j_process_img_box j_row">
-							<div class="j_process_head_img j_col">
-								<img src="__INDEX__/images/touxiang.png">
-								<div class="sanjiao"></div>
-							</div>
-							<div class="j_process_info j_row">
-								<span>林东东</span>
-								<span>评价</span>
-								<span>2017-10-01 18:00</span>
-							</div>
-						</div>
-						<div class="j_process_content_box j_row">
-							<div class="j_left_line"></div>
-							<div class="j_process_stars">
-								<p><span>处理速度：</span>
-									<span>
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Half-star.png">
-										<img src="__INDEX__/images/Star_2.png">
-									</span><span>3.5 星</span></p>
-								<p><span>服务态度：</span>
-									<span>
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Half-star.png">
-										<img src="__INDEX__/images/Star_2.png">
-									</span>
-									<span>3.5 星</span></p>
-								<p><span>满意度：</span>
-									<span>
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Star.png">
-										<img src="__INDEX__/images/Half-star.png">
-										<img src="__INDEX__/images/Star_2.png">
-									</span>
-									<span>3.5 星</span></p>
-							</div>
-						</div>
+
 
 						{volist name="case_pgs" id="vo" key="k" }
 						<div class="j_process_img_box j_row">
@@ -184,6 +151,35 @@
 							正联系交付给商家。
 							{elseif condition="$vo.status eq 3"/}
 							商家处理中。
+							{elseif condition="$vo.status eq 7"/}
+							<div class="j_process_stars" style="margin: 15px 0px 15px 0px;">
+								<p><span>处理速度：</span>
+									<span>
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Half-star.png">
+										<img src="__INDEX__/images/Star_2.png">
+									</span><span>{$basic_info.s_speed/10} 星</span></p>
+								<p><span>服务态度：</span>
+									<span>
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Half-star.png">
+										<img src="__INDEX__/images/Star_2.png">
+									</span>
+									<span>{$basic_info.s_service/10} 星</span></p>
+								<p><span>满意度：</span>
+									<span>
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Star.png">
+										<img src="__INDEX__/images/Half-star.png">
+										<img src="__INDEX__/images/Star_2.png">
+									</span>
+									<span>{$basic_info.s_satisfation/10} 星</span></p>
+							</div>
 							{else /}
 								{$vo.content}
 							{/if}
@@ -308,8 +304,93 @@
 				{/volist}
 
 			</div>
-			<div class="j_bottom_article">
+			<div class="j_bottom_article" style="width: 782px;">
 				<span class="j_bottom_title">评论</span>
+            <!-- 新增 -->
+            <div class="q_yhdp">
+                <div class="q_yhdp_type q_row">
+                    <span class="q_yhdp_type_item q_yhdp_active" data-type="0">全部（1234)</span>
+                    <span class="q_yhdp_type_item" data-type="1">最新（1234)</span>
+
+                </div>
+
+                <div class="q_pinglun_box" id="q_pl_item_html">
+
+                </div>
+                <div class="pages">
+
+                </div>
+                <div class="q_tijiao_box">
+
+                    <div class="q_row">
+                        <div class="q_tijiao_title">点评：</div>
+                        <div class="q_tijiao_right">
+                            <div class="qq">
+                                <p>企业的发展离不开您宝贵的建议，请留下您的最真实的评论！</p>
+                                <div class="message q_tj_msh" contentEditable='true'></div>
+                                <div class="But">
+                                    <img src="__INDEX__/images/emojis/bba_thumb.gif" class='bq' />
+                                    <img src="__INDEX__/images/ico_hf_picture.png" onclick="up_imgs(2)" class='bq2' />
+                                    <input type="file" style="display: none;" id="q_th_img" onchange="q_tj_imgs(this)" value="" />
+                                    <span class='submit' onclick="q_tj_pl()">发表</span>
+                                    <div class="img_sp img_sp2">
+
+                                    </div>
+                                    <!--face begin-->
+                                    <div class="face">
+                                        <ul>
+                                            <li><img src="__INDEX__/images/emojis/smilea_thumb.gif" title="呵呵]"></li>
+                                            <li><img src="__INDEX__/images/emojis/tootha_thumb.gif" title="嘻嘻]"></li>
+                                            <li><img src="__INDEX__/images/emojis/laugh.gif" title="[哈哈]"></li>
+                                            <li><img src="__INDEX__/images/emojis/tza_thumb.gif" title="[可爱]"></li>
+                                            <li><img src="__INDEX__/images/emojis/kl_thumb.gif" title="[可怜]"></li>
+                                            <li><img src="__INDEX__/images/emojis/kbsa_thumb.gif" title="[挖鼻屎]"></li>
+                                            <li><img src="__INDEX__/images/emojis/cj_thumb.gif" title="[吃惊]"></li>
+                                            <li><img src="__INDEX__/images/emojis/shamea_thumb.gif" title="[害羞]"></li>
+                                            <li><img src="__INDEX__/images/emojis/zy_thumb.gif" title="[挤眼]"></li>
+                                            <li><img src="__INDEX__/images/emojis/bz_thumb.gif" title="[闭嘴]"></li>
+                                            <li><img src="__INDEX__/images/emojis/bs2_thumb.gif" title="[鄙视]"></li>
+                                            <li><img src="__INDEX__/images/emojis/lovea_thumb.gif" title="[爱你]"></li>
+                                            <li><img src="__INDEX__/images/emojis/sada_thumb.gif" title="[泪]"></li>
+                                            <li><img src="__INDEX__/images/emojis/heia_thumb.gif" title="[偷笑]"></li>
+                                            <li><img src="__INDEX__/images/emojis/qq_thumb.gif" title="[亲亲]"></li>
+                                            <li><img src="__INDEX__/images/emojis/sb_thumb.gif" title="[生病]"></li>
+                                            <li><img src="__INDEX__/images/emojis/mb_thumb.gif" title="[太开心]"></li>
+                                            <li><img src="__INDEX__/images/emojis/ldln_thumb.gif" title="[懒得理你]"></li>
+                                            <li><img src="__INDEX__/images/emojis/yhh_thumb.gif" title="[右哼哼]"></li>
+                                            <li><img src="__INDEX__/images/emojis/zhh_thumb.gif" title="[左哼哼]"></li>
+                                            <li><img src="__INDEX__/images/emojis/x_thumb.gif" title="[嘘]"></li>
+                                            <li><img src="__INDEX__/images/emojis/cry.gif" title="[衰]"></li>
+                                            <li><img src="__INDEX__/images/emojis/wq_thumb.gif" title="[委屈]"></li>
+                                            <li><img src="__INDEX__/images/emojis/t_thumb.gif" title="[吐]"></li>
+                                            <li><img src="__INDEX__/images/emojis/k_thumb.gif" title="[打哈气]"></li>
+                                            <li><img src="__INDEX__/images/emojis/bba_thumb.gif" title="[抱抱]"></li>
+                                            <li><img src="__INDEX__/images/emojis/angrya_thumb.gif" title="[怒]"></li>
+                                            <li><img src="__INDEX__/images/emojis/yw_thumb.gif" title="[疑问]"></li>
+                                            <li><img src="__INDEX__/images/emojis/cza_thumb.gif" title="[馋嘴]"></li>
+                                            <li><img src="__INDEX__/images/emojis/88_thumb.gif" title="[拜拜]"></li>
+                                            <li><img src="__INDEX__/images/emojis/sk_thumb.gif" title="[思考]"></li>
+                                            <li><img src="__INDEX__/images/emojis/sweata_thumb.gif" title="[汗]"></li>
+                                            <li><img src="__INDEX__/images/emojis/sleepya_thumb.gif" title="[困]"></li>
+                                            <li><img src="__INDEX__/images/emojis/sleepa_thumb.gif" title="[睡觉]"></li>
+                                            <li><img src="__INDEX__/images/emojis/money_thumb.gif" title="[钱]"></li>
+                                            <li><img src="__INDEX__/images/emojis/sw_thumb.gif" title="[失望]"></li>
+                                            <li><img src="__INDEX__/images/emojis/cool_thumb.gif" title="[酷]"></li>
+                                            <li><img src="__INDEX__/images/emojis/hsa_thumb.gif" title="[花心]"></li>
+                                            <li><img src="__INDEX__/images/emojis/hatea_thumb.gif" title="[哼]"></li>
+                                            <li><img src="__INDEX__/images/emojis/gza_thumb.gif" title="[鼓掌]"></li>
+                                            <li><img src="__INDEX__/images/emojis/dizzya_thumb.gif" title="[晕]"></li>
+                                            <li><img src="__INDEX__/images/emojis/bs_thumb.gif" title="[悲伤]"></li>
+
+                                        </ul>
+                                    </div>
+                                    <!--face end-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 			</div>
 
@@ -320,8 +401,26 @@
 				<img id="bigimg" style="border:5px solid #fff;" src="" />
 			</div>
 		</div>
-		<script src="__INDEX__/style/MiniDialog-es5.min.js"></script>
-		<script src="__INDEX__/style/cases.js"></script>
-		
+	<script src="__INDEX__/style/url_tools.js"></script>
+    <script src="__INDEX__/style/q_index.js"></script>
+    <script src="__INDEX__/style/d_jquery.page.js"></script>
+    <script src="__INDEX__/style/MiniDialog-es5.min.js"></script>
+    <script src="__INDEX__/style/cases.js"></script>
+    <script>
+        $('.circlechart').circlechart(); // Initialization
+        $(".tcdPageCode").createPage({
+            pageCount: 10,
+            current: 1,
+            backFn: function(p) {
+                console.log(p);
+            }
+        });
+
+        function q_huifu_img(e) {
+            var _this = $(e); //将当前的pimg元素作为_this传入函数
+            imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
+        }
+    </script>
+
 	</body>
 </html>

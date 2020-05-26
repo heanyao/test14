@@ -156,8 +156,9 @@
 				<div class="p_info_content">
 					<div class="hd c_row" style="border-bottom: none;">
 						<span class="c_row" style="font-size: 14px;color: #666;">
-							选择投诉 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>只看已回复</p>
-							 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>只看已处理</p>
+							选择投诉 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>未回复</p>
+							 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>已回复</p>
+							 <p class="c_news"><i class="c_sx_check" @click="sx_checked($event)"></i>已完成</p>
 						</span>
 					</div>
 					<div class="left_con_list" style="font-size: 0;"></div>
@@ -344,8 +345,10 @@
 							var res = data.data.data;
 							for(var i = 0; i < res.length; i++ ) {
 								var status = '';
+								var status2 = '';
 								if (res[i].status < 4) {
 									status = '/static/index/images/dealIcon.png'; // 已处理
+									status2 = '<button id="go_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:50px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">修改</button>'; // 已处理
 								} else if(res[i].status > 3 && res[i].status <7) {
 									status = '/static/index/images/returnIcon.png'; // 已回复
 								} else if (res[i].status > 6) { 
@@ -371,7 +374,7 @@
 										<span class="item_marginLeft10">${res[i].require}</span>
 									</div>
 									<div class="left_item_complaint_content">
-									<button id="go_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:50px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">修改</button></div>
+									${status2}</div>
 								</a>`
 							}
 							// if(page==3){

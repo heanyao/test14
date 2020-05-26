@@ -370,11 +370,11 @@
 			// 跳转
 			function go1(e){
 				id= e.getAttribute('data-id')
-				$(window).attr('location','/index/myform/addcase?myid='+id);
+				$(window).attr('location','/index/cases/index?myid='+id);
 			}
 			function go2(id){
 				console.log('修改')
-				$(window).attr('location','www.testweb222.com/'+id);
+				$(window).attr('location','/index/myform/addcase?myid='+id);
 			}
 			// 弹窗
 			function go3(id){
@@ -454,12 +454,19 @@
 							var res = data.data.data;
 							for(var i = 0; i < res.length; i++ ) {
 								var status = '';
-								if (res[i].status < 4) {
-									status = '/static/index/images/dealIcon.png'; // 已处理
-								} else if(res[i].status > 3 && res[i].status <7) {
-									status = '/static/index/images/returnIcon.png'; // 已回复
+								var botton1 = '';//追加
+								var botton2 = '';//评价
+								if (res[i].status === 0) {
+									status = '/static/index/images/shenhezhong.png'; // 审核中
+									botton1 = '<button id="go2_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">追加投诉</button>'; 
+								} else if(res[i].status > 1 && res[i].status <7) {
+									status = '/static/index/images/chulizhong.png'; // 处理中
+									botton1 = '<button id="go2_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">追加投诉</button>'; 
+									botton2 = '<button id="go3_${res[i].myid}" onclick="go3(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">确认完成</button>';
 								} else if (res[i].status > 6) {
-									status = '/static/index/images/doneIcon.png'; // 已完成
+									status = '/static/index/images/yiwancheng.png'; // 已完成
+								} else if (res[i].status === 1) {
+									status = '/static/index/images/weitongguo.png'; // 未通过
 								}
 								html_text += `<div class="left_con_item"><a data-id="${res[i].myid}" href="javascript:;" onclick="go1(this)">
 									<img src="${status}" alt="状态" class="left_msg_status"/>
@@ -481,8 +488,8 @@
 										<span class="item_marginLeft10">${res[i].require}</span>
 									</div></a>
 									<div class="left_item_complaint_content">
-									<button id="go2_${res[i].myid}" onclick="go2(${res[i].myid});return false;" style="width:50px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 100px;bottom: 20px;z-index:99999">修改</button>
-									<button id="go3_${res[i].myid}" onclick="go3(${res[i].myid});return false;" style="width:70px; height:30px; display:block;color: #1E6FE4;border: 1px #1E6FE4 solid;border-radius: 3px;background: #ffffff;position: absolute;right: 20px;bottom: 20px;z-index:99999">确认完成</button></div></div>`
+									${botton1}
+									${botton2}</div></div>`
 							}
 							// if(page==3){
 							// 	$('.left_click_load_more').css('display', 'none')

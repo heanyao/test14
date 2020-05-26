@@ -12,7 +12,7 @@ class Cases extends Model
         $map['a.myid']  = $myid;
             $ret=db('case')
             ->where($map)
-            ->field('a.id,a.title,a.require,a.money,a.broker_id,a.is_hidefile,a.tag,a.details,a.images,a.time,a.status,a.myid,b.head_img_url,b.name')
+            ->field('a.id,a.title,a.require,a.money,a.broker_id,a.is_hidefile,a.tag,a.details,a.images,a.time,a.status,a.myid,a.s_speed,a.s_service,a.s_satisfation,b.head_img_url,b.name')
             ->alias('a')
             ->join('bk_user b','a.user_id=b.id')
             ->find();

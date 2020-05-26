@@ -102,9 +102,14 @@ class Myform extends Common
         if ($res == null) {
             $this->returnMsg(400, '暂无数据！');
         } 
-            //响应数据给客户端
-            $this->returnMsg(200, '提交成功！', $res);
+            //更新case状态
+            $update_case=db('case')->where('id', $mydata['pid'])->update(['status' => 5]);
+            if($update_case){
+            $this->returnMsg(200, '提交成功！', $res);    
+        }else{
+            $this->returnMsg(400, '提交失败！');
     }
+        }
 
 }
 

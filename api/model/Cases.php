@@ -85,25 +85,22 @@ class Cases extends Model
         return $tree;
     }
 
-   //图片上传处理
-    public function upload(){
-        $files = request()->file('image');
-        // dump($files);die;
-        if(!$files){
-            return '';
+   //图片上传处理 
+    public function uploadOne($file)
+    {
+
+
+        $info = $file->validate(['size' => 1000000, 'ext' => 'jpg,png,gif'])->move(ROOT_PATH . 'public' . DS . 'uploadscmt');
+        if ($info) {
+            $ret['data'] =DS . 'uploadscmt' . DS . $info->getSaveName();
+            $ret['code'] = 200;
+            return $ret;
+        } else {
+            // 上传失败获取错误信息
+            $ret['data'] = $file->getError();
+            $ret['code'] = 400;
+            return $ret;
         }
-        $imageStr = '';
-        foreach($files as $file){
-            // 移动到框架应用根目录/public/uploadscmt/ 目录下
-            $info = $file->validate(['size'=>156780,'ext'=>'jpg,png,gif'])->move(ROOT_PATH . 'public' . DS . 'uploadscmt');
-            if($info) {
-                $imageStr .= DS . 'uploads'. DS .$info->getSaveName() . ',';
-            } else {
-                // 上传失败获取错误信息
-                // $file->getError();
-            }    
-        }
-        return rtrim($imageStr, ',');
     }
 
 
@@ -143,6 +140,44 @@ class Cases extends Model
         return $ret;
     }
 
+
+    # 顶，type：1加顶，2取消顶
+    public function cmt_addDing($artId, $userId, $type = 1)
+    {
+        $data = [
+            'cmt_id' => (int)$artId,
+            'user_id' => (int)$userId
+        ];
+        $ret['code'] = 'add200';
+        // dump($data['cmt_id']);die;
+        $type = (int)$type;
+        if ($type === 1) {
+            // 加顶
+            Db::startTrans();
+            try{
+                Db::name('case_cmts_ding')->insert($data);
+
+                Db::name('case_comments')->where('id', $data['cmt_id'])->setInc('ding_sum');
+                // 提交事务
+                $ret['data'] = Db::name('case_comments')->field('ding_sum')->where('id', $data['cmt_id'])->find();
+                Db::commit();  
+            } catch (\Exception $e) {
+                Db::rollback();
+                $ret = false;
+           }
+        } elseif ($type === 2) {
+            // 取消顶
+            $res = Db::name('case_cmts_ding')->where($data)->delete();
+            if ($res === 1) {
+                Db::name('case_comments')->where('id', $data['cmt_id'])->setDec('ding_sum');
+                $ret['code'] = 'delete200';
+                $ret['data'] = Db::name('case_comments')->field('ding_sum')->where('id', $data['cmt_id'])->find();
+            }
+            
+        }
+        return $ret;
+    }
+    
     public function supporter_list($case_id){
 
         $map['a.case_id']  = $case_id;
